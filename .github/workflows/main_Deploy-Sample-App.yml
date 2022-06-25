@@ -34,11 +34,11 @@ jobs:
       - name: Publish app
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
-      # - name: Upload artifact for deployment job
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: .upload-net-app
-      #     path: ${{env.DOTNET_ROOT}}/myapp
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: .upload-net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
     runs-on: windows-latest
@@ -48,10 +48,10 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      # - name: Download artifact from build job
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: .download-net-app
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: .download-net-app
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
