@@ -17,6 +17,8 @@ NETCORE_VERSION: '6.0.x'                        # set this to the .NET Core vers
 jobs:
 
   build: 
+  
+     name: Build and Deploy
      runs-on: windows-latest
 
       steps:
