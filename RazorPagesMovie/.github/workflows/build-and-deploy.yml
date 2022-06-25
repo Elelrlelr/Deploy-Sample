@@ -1,0 +1,52 @@
+name: "Build and Deploy"
+
+on:
+  push:
+    branches:
+      - master
+
+
+
+AZURE_WEBAPP_NAME: Deploy-Sample-App            # set this to your application's name
+AZURE_WEBAPP_PACKAGE_PATH: './MyPublished'      # set this to the path to your web app project, defaults to the repository root
+NETCORE_VERSION: '6.0.x'                        # set this to the .NET Core version to use
+
+
+
+
+jobs:
+
+  build: 
+     runs-on: windows-latest
+
+      steps:
+        - uses: actions/checkout@v2
+
+        
+      - name: Setup .NET Core SDK ${{ env.NETCORE_VERSION }}
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.NETCORE_VERSION }}
+          include-prerelease: true
+
+      - name: Restore packages
+        run: dotnet restore
+      
+      - name: Build with dotnet
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test app
+        run: dotnet test --no-build
+
+      - name: Publish app for deploy
+        run: dotnet publish --configuration Release --no-build --output ./MyPublished
+
+
+       - name: 'Deploy to Azure WebApp'
+        uses: azure/webapps-deploy@v1
+        with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.MY_AZURE_SAMPLE_SECRETS }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+
