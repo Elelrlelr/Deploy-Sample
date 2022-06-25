@@ -1,57 +1,63 @@
-name: "Build and Deploy"
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy ASP.Net Core app to Azure Web App - Deploy-Sample-App
 
 on:
   push:
     branches:
       - main
-
-      workflow_dispatch:
-
-
-
-AZURE_WEBAPP_NAME: Deploy-Sample-App            # set this to your application's name
-AZURE_WEBAPP_PACKAGE_PATH: './MyPublished'      # set this to the path to your web app project, defaults to the repository root
-NETCORE_VERSION: '6.0.x'                        # set this to the .NET Core version to use
-
-
-
+  workflow_dispatch:
 
 jobs:
+  build:
+    runs-on: windows-latest
 
-  build: 
-
-      name: Build and Deploy
-      runs-on: windows-latest
-
-     steps:
-     
+    steps:
       - uses: actions/checkout@v2
 
-        
-      - name: Setup .NET Core SDK ${{ env.NETCORE_VERSION }}
+      - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: ${{ env.NETCORE_VERSION }}
+          dotnet-version: '6.0.x'
           include-prerelease: true
 
       - name: Restore packages
         run: dotnet restore
-      
+
       - name: Build with dotnet
         run: dotnet build --configuration Release --no-restore
 
       - name: Test app
-        run: dotnet test --no-build
+        run: dotnet test --no-build --verbosity normal
 
-      - name: Publish app for deploy
-        run: dotnet publish --configuration Release --no-build --output ./MyPublished
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/MyPublish
 
+      # - name: Upload artifact for deployment job
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: .upload-net-app
+      #     path: ${{env.DOTNET_ROOT}}/MyPublish
 
-       - name: 'Deploy to Azure WebApp'
-        uses: azure/webapps-deploy@v1
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      # - name: Download artifact from build job
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: .download-net-app
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
         with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.MY_AZURE_SAMPLE_SECRETS }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
-
+          app-name: 'Deploy-Sample-App'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.MY_AZURE_SAMPLE_SECRETS }}
+          package: .
