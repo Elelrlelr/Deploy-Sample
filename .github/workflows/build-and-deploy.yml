@@ -3,7 +3,9 @@ name: "Build and Deploy"
 on:
   push:
     branches:
-      - master
+      - main
+
+      workflow_dispatch:
 
 
 
@@ -17,12 +19,13 @@ NETCORE_VERSION: '6.0.x'                        # set this to the .NET Core vers
 jobs:
 
   build: 
-  
-     name: Build and Deploy
-     runs-on: windows-latest
 
-      steps:
-        - uses: actions/checkout@v2
+      name: Build and Deploy
+      runs-on: windows-latest
+
+     steps:
+     
+      - uses: actions/checkout@v2
 
         
       - name: Setup .NET Core SDK ${{ env.NETCORE_VERSION }}
