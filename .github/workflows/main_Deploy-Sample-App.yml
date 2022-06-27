@@ -25,29 +25,17 @@ jobs:
       - name: Restore packages
         run: dotnet restore
 
-      - name: Migrate database
-        run: |
-        dotnet tool install --global dotnet-ef
+      - name: Migrate and Update database
+        run: |       
         dotnet ef migrations add Initial
-
-      - name : Update database
-        run: dotnet ef database update
-
+        dotnet ef database update
+      
       - name: Build with dotnet
         run: dotnet build --configuration Release --no-restore
 
       - name: Test app
         run: dotnet test --no-build --verbosity normal
-
-      - name: Migrate database
-        run: |
-        dotnet tool install --global dotnet-ef
-        dotnet ef migrations add Initial
-
-      - name : Update database
-        run: dotnet ef database update
-
-      
+     
 
       - name: Publish app
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
