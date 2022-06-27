@@ -31,12 +31,6 @@ jobs:
       - name: Test app
         run: dotnet test --no-build --verbosity normal
 
-      
-
-      - name: Publish app
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-
-
       - name: Migrate database
         run: |
         dotnet tool install --global dotnet-ef
@@ -44,6 +38,13 @@ jobs:
 
       - name : Update database
         run: dotnet ef database update
+
+      
+
+      - name: Publish app
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
