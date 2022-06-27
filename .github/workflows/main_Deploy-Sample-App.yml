@@ -35,12 +35,7 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release --no-restore
 
-      - name: Update database
-        run: |
-          dotnet ef migrations add Initial
-          dotnet ef database update
-        env:
-          ASPNETCORE_ENVIRONMENT: Development
+      
 
       
 
@@ -51,6 +46,14 @@ jobs:
       - name: Publish app
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
+
+      - name: Update database
+        run: |
+          dotnet tool install --global dotnet-ef
+          dotnet ef migrations add Initial
+          dotnet ef database update
+        env:
+          ASPNETCORE_ENVIRONMENT: Production
 
 
       - name: Upload artifact for deployment job
