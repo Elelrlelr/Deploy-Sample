@@ -11,39 +11,25 @@ builder.Services.AddRazorPages();
 
 
 // builder.Services.AddDbContext<RazorPagesMovieContext>(options =>
-//          options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionMovieContext")));
+//          options.UseSqlServer(builder.Configuration.GetConnectionString("connString")));
 
-builder.Services.AddDbContext<RazorPagesMovieContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("RazorPagesMovieContext") ?? throw new InvalidOperationException("Connection string 'RazorPagesMovieContext' not found.")));
+// builder.Services.AddDbContext<RazorPagesMovieContext>(options =>
+//     options.UseSqlite(builder.Configuration.GetConnectionString("RazorPagesMovieContext") ?? throw new InvalidOperationException("Connection string 'RazorPagesMovieContext' not found.")));
 
-
-
-// FOR SQLite
-
-// if (builder.Environment.IsDevelopment())
-// {
-//     builder.Services.AddDbContext<RazorPagesMovieContext>(options =>
-//         options.UseSqlite(builder.Configuration.GetConnectionString("RazorPagesMovieContext")));
-// }
-// else
-// {
-//     builder.Services.AddDbContext<RazorPagesMovieContext>(options =>
-//         options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionMovieContext")));
-// }
 
 //  FOR SQLserver
 
-// if (builder.Environment.IsDevelopment())
-// {
+if (builder.Environment.IsDevelopment())
+{
    
-//     builder.Services.AddDbContext<RazorPagesMovieContext>(options =>
-//         options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionMovieContext")));
-// }
-// else
-// {
-//     builder.Services.AddDbContext<RazorPagesMovieContext>(options =>
-//         options.UseSqlite(builder.Configuration.GetConnectionString("RazorPagesMovieContext")));
-// }
+    builder.Services.AddDbContext<RazorPagesMovieContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("connStringSQL")));
+}
+else
+{
+    builder.Services.AddDbContext<RazorPagesMovieContext>(options =>
+         options.UseSqlServer(builder.Configuration.GetConnectionString("connStringProduction")));
+}
 
 
 
