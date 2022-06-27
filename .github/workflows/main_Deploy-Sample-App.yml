@@ -50,8 +50,8 @@ jobs:
       - name: Update database
         run: |
           dotnet tool install --global dotnet-ef
-          dotnet ef migrations add Initial
-          dotnet ef database update
+          dotnet ef migrations add Initial --project RazorPagesMovie
+          dotnet ef database update --project RazorPagesMovie
         env:
           ASPNETCORE_ENVIRONMENT: Production
 
