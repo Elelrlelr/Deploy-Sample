@@ -25,6 +25,14 @@ jobs:
       - name: Restore packages
         run: dotnet restore
 
+      - name: Migrate database
+        run: |
+        dotnet tool install --global dotnet-ef
+        dotnet ef migrations add Initial
+
+      - name : Update database
+        run: dotnet ef database update
+
       - name: Build with dotnet
         run: dotnet build --configuration Release --no-restore
 
