@@ -23,15 +23,26 @@ jobs:
           include-prerelease: true
 
       - name: Restore packages
-        run: dotnet restore
+        run: |
+          dotnet restore
+          dotnet tool restore
 
-      - name: Migrate and Update database
-        run: |       
-        dotnet ef migrations add Initial
-        dotnet ef database update
+      
+
+    
+
       
       - name: Build with dotnet
         run: dotnet build --configuration Release --no-restore
+
+      - name: Update database
+        run: |
+          dotnet ef migrations add Initial
+          dotnet ef database update
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+
+      
 
       - name: Test app
         run: dotnet test --no-build --verbosity normal
